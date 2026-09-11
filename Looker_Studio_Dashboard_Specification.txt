@@ -1,0 +1,90 @@
+LOOKER STUDIO DASHBOARD SPECIFICATION
+
+PAGE: Executive Overview
+
+CANVAS:
+16:9 landscape
+
+TOP:
+Title: Olist E-Commerce Business Performance Dashboard
+Subtitle: Sales | Customer | Delivery | Satisfaction
+
+FILTER BAR:
+1. Purchase Date
+2. Customer State
+3. Product Category
+4. Payment Type
+5. Repeat Customer
+
+KPI ROW:
+1. Delivered Orders -> COUNT_DISTINCT(order_id)
+2. Revenue -> SUM(revenue)
+3. Average Order Value -> SUM(revenue) / COUNT_DISTINCT(order_id)
+4. Average Review Score -> AVG(review_score)
+5. On-Time Delivery Rate -> AVG(on_time) * 100
+6. Repeat Customer Rate -> customer-level repeat rate; preferably pre-calculated in source or shown as a separate retention KPI
+
+CHART 1:
+Title: Monthly Revenue Trend
+Chart: Time series / line
+Dimension: month or order_purchase_timestamp by month
+Metric: SUM(revenue)
+
+CHART 2:
+Title: Monthly Orders Trend
+Chart: Time series / line
+Dimension: month
+Metric: COUNT_DISTINCT(order_id)
+
+CHART 3:
+Title: Top 10 Product Categories by Revenue
+Chart: Horizontal bar
+Dimension: product_category
+Metric: SUM(revenue)
+Sort: Descending
+Row limit: 10
+
+CHART 4:
+Title: Revenue by Customer State
+Chart: Horizontal bar
+Dimension: customer_state
+Metric: SUM(revenue)
+Sort: Descending
+
+CHART 5:
+Title: Delivery Performance vs Review Score
+Chart: Column/bar
+Create calculated dimension:
+CASE
+WHEN delivery_vs_estimated_days <= 0 THEN "On time / early"
+WHEN delivery_vs_estimated_days <= 7 THEN "1-7 days late"
+ELSE ">7 days late"
+END
+Metric: AVG(review_score)
+
+CHART 6:
+Title: Payment Method Usage
+Chart: Bar
+Dimension: payment_type
+Metric: COUNT_DISTINCT(order_id)
+Sort: Descending
+
+CHART 7:
+Title: Revenue vs Freight Cost
+Chart: Scatter
+X-axis: freight
+Y-axis: revenue
+Dimension/detail: order_id
+
+TABLE:
+Title: Category Performance
+Dimensions: product_category
+Metrics: revenue, order_items, avg_item_price, freight
+Sort by revenue descending
+
+DESIGN RULES:
+- Keep the dashboard management-focused.
+- Avoid unnecessary charts.
+- Use consistent number formatting.
+- Use a clear hierarchy: KPIs -> trends -> drivers -> customer experience.
+- Add a short text box stating that the analysis is based on historical Olist data and is observational.
